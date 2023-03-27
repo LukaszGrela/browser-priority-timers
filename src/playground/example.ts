@@ -3,60 +3,61 @@ import {
   IBrowserPriorityTimers,
 } from '../BrowserPriorityTimers';
 
-const priorityTimers: IBrowserPriorityTimers = new BrowserPriorityTimers();
-const SECOND = 1000;
-
-type TStatus = 'ON' | 'OFF';
-let timerId: number | NodeJS.Timer = -1;
-let date: number = 0;
-let counter = 0;
-let maxDiff = 0;
-
-function updateTimer(timerNode: HTMLParagraphElement): void {
-  const diff = date === 0 ? 0 : new Date().getTime() - date;
-
-  maxDiff = Math.max(maxDiff, diff);
-  timerNode.innerHTML = `${counter++} - ${(diff / 1000).toPrecision(
-    3
-  )}s max: ${(maxDiff / 1000).toPrecision(3)}`;
-}
-
-const tick = (timerNode: HTMLParagraphElement): void => {
-  updateTimer(timerNode);
-  date = new Date().getTime();
-};
-
-function switchTimers(status: TStatus, timerNode: HTMLParagraphElement): void {
-  counter = 0;
-  date = 0;
-  maxDiff = 0;
-  if (status === 'OFF') {
-    //
-    priorityTimers.clearInterval(timerId);
-    // use normal timers
-    timerId = setInterval(tick, SECOND, timerNode);
-  } else {
-    //
-    clearInterval(timerId);
-    // use priority timers
-    timerId = priorityTimers.setInterval(tick, SECOND, timerNode);
-  }
-}
+type TUsedTimer = 'PRIORITY' | 'BUILT-IN';
 
 export function example(node: HTMLElement): void {
+  const priorityTimers: IBrowserPriorityTimers = new BrowserPriorityTimers();
+  const SECOND = 1000;
+
   let timerNode: HTMLParagraphElement;
   let buttonLabelNode: HTMLSpanElement;
-  let status: TStatus = 'ON';
-  const toggle = () => {
-    if (status === 'ON') {
-      status = 'OFF';
+  let usedTimerType: TUsedTimer = 'BUILT-IN';
+  let timerId: number = -1;
+  let date: number = 0;
+  let counter = 0;
+  let maxDiff = 0;
+
+  function updateTimer(): void {
+    const diff = date === 0 ? 0 : new Date().getTime() - date;
+
+    maxDiff = Math.max(maxDiff, diff);
+    timerNode.innerHTML = `Tick #${counter++} - last: ${(
+      diff / 1000
+    ).toPrecision(3)}s max: ${(maxDiff / 1000).toPrecision(3)}s`;
+  }
+
+  const tick = (): void => {
+    updateTimer();
+    date = new Date().getTime();
+  };
+
+  function switchTimers(): void {
+    // reset
+    counter = 0;
+    date = 0;
+    maxDiff = 0;
+    if (usedTimerType === 'BUILT-IN') {
+      // clear other timer
+      priorityTimers.clearInterval(timerId);
+      // use normal timers
+      timerId = window.setInterval(tick, SECOND);
     } else {
-      status = 'ON';
+      // clear other timer
+      window.clearInterval(timerId);
+      // use priority timers
+      timerId = priorityTimers.setInterval(tick, SECOND);
+    }
+  }
+
+  const toggle = () => {
+    if (usedTimerType === 'PRIORITY') {
+      usedTimerType = 'BUILT-IN';
+    } else {
+      usedTimerType = 'PRIORITY';
     }
     // update
-    buttonLabelNode.innerHTML = `${status}`;
-
-    switchTimers(status, timerNode);
+    buttonLabelNode.innerHTML = `${usedTimerType}`;
+    switchTimers();
   };
 
   if (node) {
@@ -65,14 +66,16 @@ export function example(node: HTMLElement): void {
             <p>The longer you wait the longer the difference as built in timers are throttled.</p>
             <p>Priority timers are working on Workers so will not be throttled</p>
             <p id="timer"></p>
-            <button id="toggle-timers">Turn priority timers: <span id="status">ON</span</button>
+            <button id="toggle-timers">Use <span id="status"></span> timers.</button>
         `;
 
-    const btn = node.querySelector('#toggle-timers')!;
     buttonLabelNode = node.querySelector('#status')!;
     timerNode = node.querySelector('#timer')!;
+    const btn = node.querySelector('#toggle-timers')!;
     btn.addEventListener('click', () => toggle());
+
     // start
-    switchTimers(status, timerNode);
+    buttonLabelNode.innerHTML = `${usedTimerType}`;
+    switchTimers();
   }
 }
