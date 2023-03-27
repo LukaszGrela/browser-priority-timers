@@ -31,7 +31,7 @@ describe('BrowserPriorityTimers', () => {
             id: message.id,
             type: 'fire',
           };
-          console.log('mocked worker impl', messageOut);
+          // console.log('mocked worker impl', messageOut);
           me.$onmessage({ data: messageOut });
         }
       },
@@ -62,16 +62,16 @@ describe('BrowserPriorityTimers', () => {
   });
 
   afterEach(() => {
-    window.URL = undefined;
-    window.Worker = undefined;
+    window.URL = undefined as unknown as typeof window.URL;
+    window.Worker = undefined as unknown as typeof window.Worker;
 
     jest.clearAllTimers();
     jest.useRealTimers();
   });
 
   it('Worker not supported', () => {
-    window.URL = undefined;
-    window.Worker = undefined;
+    window.URL = undefined as unknown as typeof window.URL;
+    window.Worker = undefined as unknown as typeof window.Worker;
 
     const timers = new BrowserPriorityTimers();
 
