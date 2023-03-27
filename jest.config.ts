@@ -1,6 +1,6 @@
 module.exports = {
   preset: "ts-jest",
-  testEnvironment: "js-dom",
+  testEnvironment: "jsdom",
   transform: {
     "^.+\\.(ts|tsx)$": "ts-jest",
   },
