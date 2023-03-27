@@ -5,7 +5,7 @@ import type {
 } from '../types';
 
 type TIntervalDictionary = {
-  [key: number]: NodeJS.Timer;
+  [key: number]: number;
 };
 
 export function workerSource(): void {
@@ -16,7 +16,7 @@ export function workerSource(): void {
   ) {
     switch (e.data.type) {
       case 'setInterval':
-        idMap[e.data.id] = setInterval(function setIntervalCallback() {
+        idMap[e.data.id] = self.setInterval(function setIntervalCallback() {
           const message: IFireMessage = {
             type: 'fire',
             id: e.data.id,
@@ -25,11 +25,11 @@ export function workerSource(): void {
         }, e.data.delay);
         break;
       case 'clearInterval':
-        clearInterval(idMap[e.data.id]);
+        self.clearInterval(idMap[e.data.id]);
         delete idMap[e.data.id];
         break;
       case 'setTimeout':
-        idMap[e.data.id] = setTimeout(function setTimeoutCallback() {
+        idMap[e.data.id] = self.setTimeout(function setTimeoutCallback() {
           const message: IFireMessage = {
             type: 'fire',
             id: e.data.id,
@@ -40,7 +40,7 @@ export function workerSource(): void {
         }, e.data.delay);
         break;
       case 'clearTimeout':
-        clearTimeout(idMap[e.data.id]);
+        self.clearTimeout(idMap[e.data.id]);
         delete idMap[e.data.id];
         break;
     }
