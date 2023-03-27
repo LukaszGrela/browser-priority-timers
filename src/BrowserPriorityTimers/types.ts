@@ -4,8 +4,8 @@ export interface IBrowserPriorityTimers {
    * Will return true when Worker functionality is available.
    */
   workerAvailable(): boolean;
-  // timers API (setTimeout, clearTimeout, setInterval, clearInterval)
 
+  // timers API (setTimeout, clearTimeout, setInterval, clearInterval)
   setTimeout(callback: (args: void) => void, delay?: number): number;
   setTimeout<A extends unknown[]>(
     callback: (...args: A) => void,
