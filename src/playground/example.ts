@@ -11,7 +11,7 @@ export function example(node: HTMLElement): void {
 
   let timerNode: HTMLParagraphElement;
   let buttonLabelNode: HTMLSpanElement;
-  let usedTimerType: TUsedTimer = 'BUILT-IN';
+  let usedTimerType: TUsedTimer = 'PRIORITY';
   let timerId: number = -1;
   let date: number = 0;
   let counter = 0;
@@ -26,10 +26,11 @@ export function example(node: HTMLElement): void {
     ).toPrecision(3)}s max: ${(maxDiff / 1000).toPrecision(3)}s`;
   }
 
-  const tick = (): void => {
+  function tick(timerUsed: TUsedTimer): void {
+    console.log(`Tick on ${timerUsed}`);
     updateTimer();
     date = new Date().getTime();
-  };
+  }
 
   function switchTimers(): void {
     // reset
@@ -40,25 +41,27 @@ export function example(node: HTMLElement): void {
       // clear other timer
       priorityTimers.clearInterval(timerId);
       // use normal timers
-      timerId = window.setInterval(tick, SECOND);
+      timerId = window.setInterval(tick, SECOND, usedTimerType);
     } else {
       // clear other timer
       window.clearInterval(timerId);
       // use priority timers
-      timerId = priorityTimers.setInterval(tick, SECOND);
+      timerId = priorityTimers.setInterval(tick, SECOND, usedTimerType);
     }
   }
 
-  const toggle = () => {
+  function toggle() {
+    // update
+    buttonLabelNode.innerHTML = `${usedTimerType}`;
+
     if (usedTimerType === 'PRIORITY') {
       usedTimerType = 'BUILT-IN';
     } else {
       usedTimerType = 'PRIORITY';
     }
-    // update
-    buttonLabelNode.innerHTML = `${usedTimerType}`;
+
     switchTimers();
-  };
+  }
 
   if (node) {
     node.innerHTML = `
@@ -75,7 +78,6 @@ export function example(node: HTMLElement): void {
     btn.addEventListener('click', () => toggle());
 
     // start
-    buttonLabelNode.innerHTML = `${usedTimerType}`;
-    switchTimers();
+    toggle();
   }
 }
