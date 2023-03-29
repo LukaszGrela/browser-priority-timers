@@ -1,6 +1,6 @@
 {
   "name": "browser-priority-timers",
-  "private": true,
+  "description": "Browsers throttle the timers of the inactive tabs for optimisation purpose. Sometimes web application needs timers that works even when tab is inactive. This library resolves this with the use of web worker based timers.",
   "version": "0.1.0",
   "main": "./dist/browser-priority-timers.cjs",
   "module": "./dist/browser-priority-timers.mjs",
@@ -10,6 +10,9 @@
       "import": "./dist/browser-priority-timers.mjs"
     }
   },
+  "types": "./dist/browser-priority-timers.d.ts",
+  "author": "Lukasz 'Severiaan' Grela",
+  "license": "MIT",
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build && dts-bundle-generator --config ./dts-bundle-generator.config.ts",
