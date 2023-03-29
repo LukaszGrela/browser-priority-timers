@@ -41,3 +41,11 @@ if(timers.workerAvailable()) {
   timers.clearTimeout(intervalId);
 }
 ```
+
+## Acknowledgment
+
+- Project bootstrapped with [vite-vanilla-ts-lib-starter](https://github.com/kbysiec/vite-vanilla-ts-lib-starter)
+
+## License
+
+MIT
