@@ -2,6 +2,14 @@
 
 Browsers for optimisation throttles the tabs that are not visible. This slows down any timers the page is executing. When your application requires the timer to work reliably even in the background you can use the web workers as those are on separate thread and are not limited by aforementioned optimisation. The `BrowserPriorityTimers` class implements the timers API on the web worker thread.
 
+## Installation
+
+Install library by calling
+
+```CLI
+npm i browser-priority-timers
+```
+
 ## API
 
 ### `workerAvailable()`
