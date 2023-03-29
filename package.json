@@ -13,6 +13,13 @@
   "types": "./dist/browser-priority-timers.d.ts",
   "author": "Lukasz 'Severiaan' Grela",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LukaszGrela/browser-priority-timers"
+  },
+  "bugs": {
+    "url": "https://github.com/LukaszGrela/browser-priority-timers/issues"
+  },
   "scripts": {
     "dev": "vite --host",
     "build": "tsc && vite build && dts-bundle-generator --config ./dts-bundle-generator.config.ts",
